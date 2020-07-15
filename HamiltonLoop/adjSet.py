@@ -1,3 +1,4 @@
+import re
 from GraphBase import GraphBase
 
 class adjSet(GraphBase):
@@ -9,17 +10,18 @@ class adjSet(GraphBase):
         if not lines:
             raise ValueError('Expected something from input file!')
         
-        #私有变量lines[0] -> V E
-        self._V, self._E = (int(i) for i in lines[0].split())
+        self._NAME = lines[0].split(':')[1]
+        self._V = int(re.search('\d+', lines[3]).group())
         if self._V < 0:
             raise ValueError('V must be non-negative')   
-        if self._E < 0:
-            raise ValueError('E must be non-negative')
         
         #邻接表，记录邻接点
-        self.__edgelist = []
+        self.__edgelist = []    #记录所有的边
+        self._E = 0
         self._adj = [set() for _ in range(self._V+1)]
-        for each_line in lines[1:]:
+        for each_line in lines[6:]:
+            if (each_line.split() == ['-1']):
+                break
             a, b = (int(i) for i in each_line.split())
             self._validate_vertex(a)
             self._validate_vertex(b)
@@ -30,6 +32,10 @@ class adjSet(GraphBase):
             self._adj[a].add(b)
             self._adj[b].add(a)
             self.__edgelist.append((a, b))
+            self._E += 1
+            
+        if self._E < 0:
+            raise ValueError('E must be non-negative')
 
     @property
     def V(self):
@@ -38,6 +44,10 @@ class adjSet(GraphBase):
     @property
     def E(self):
         return self._E
+    
+    @property
+    def graph_name(self):
+        return self._NAME
     
     def get_all_edge(self):
         return self.__edgelist
@@ -98,6 +108,7 @@ class adjSet(GraphBase):
         return self.__str__()
     
 if __name__ == '__main__':
-    filename = '../alb1000.hcp'
+    filename = 'D:/1Study/paper/example/dataset/ALL_hcp/alb1000.hcp'
     adj_list = adjSet(filename)
     print(adj_list)
+    print(adj_list.graph_name)

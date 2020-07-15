@@ -1,5 +1,8 @@
 from adjSet import adjSet as Graph
 from goto import with_goto
+from pathlib import Path
+from time import process_time
+from openpyxl import Workbook
 import sys
 
 class HybridHam:
@@ -10,7 +13,7 @@ class HybridHam:
         self.__pre_visted = [False] * (G.V + 1)
         # self.preprocessor()
         # self.delete_edge()
-        self.detection1()
+        # self.detection1()
         self.__record = [0] * (G.V + 1)
         self.__list_v = self.__sort_degree()
         self.__stv = 4
@@ -287,8 +290,40 @@ class HybridHam:
 
         
 if __name__ == '__main__':
-    # sys.setrecursionlimit(5000)
-    filename = '../g7.txt'
+    sys.setrecursionlimit(5000)
+    filename = './dataset/tsphcp/COL_1000.hcp'
     graph = Graph(filename)
     hamilton_loop = HybridHam(graph)
     hamilton_loop.result()
+    
+    '''
+    basepath = Path('dataset/tsphcp')
+    
+    xfname = "result.xlsx"
+    workbook = Workbook()
+    result_sheet = workbook.active
+    result_sheet.title = 'result'
+    result_sheet['A1'] = 'NAME'
+    result_sheet['B1'] = 'V'
+    result_sheet['C1'] = 'E'
+    result_sheet['D1'] = 'ALGORITHM_TIME'    
+    
+    rw = 2
+    for entry in basepath.iterdir():
+        filename = './dataset/tsphcp/' + entry.name
+        print(entry.name)
+        graph = Graph(filename)
+        result_sheet.cell(row=rw, column=1).value = graph.graph_name
+        result_sheet.cell(row=rw, column=2).value = graph.V
+        result_sheet.cell(row=rw, column=3).value = graph.E
+        start = process_time()
+        hamilton_loop = HybridHam(graph)
+        end = process_time() - start
+        result_sheet.cell(row=rw, column=4).value = str(end)
+        print(str(end))
+        rw += 1
+        #hamilton_loop.result()
+    workbook.save(xfname)
+    '''
+
+    

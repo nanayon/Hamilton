@@ -128,7 +128,7 @@ class HamiltonLoop:
    
         
 if __name__ == '__main__':
-    filename = '../g2.txt'
+    filename = 'D:/1Study/paper/example/dataset/ALL_hcp/alb1000.hcp'
     graph = Graph(filename)
     hamilton_loop = HamiltonLoop(graph)
     print(hamilton_loop.result())
